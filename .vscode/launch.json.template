@@ -1,0 +1,14 @@
+{
+  "configurations": [
+    {
+      "type": "pwa-chrome",
+      "request": "launch",
+      "name": "nuxtjs: chrome",
+      "runtimeExecutable": "D:/yichengchen/ungoogled-chromium/chrome.exe",  // windows
+      "runtimeExecutable": "/Applications/Chromium.app/Contents/MacOS/Chromium",  // macos
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "nuxtjs: start"
+    }
+  ]
+}
