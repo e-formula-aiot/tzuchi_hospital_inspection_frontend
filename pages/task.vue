@@ -5,15 +5,92 @@
         <span>巡檢清單</span>
       </v-card-title>
       <v-card-text>
-        <v-select
-          :items="selectItem"
-          label="工作單"
-          item-value="_id"
-          item-text="name"
-          v-model="selectItemValue"
-          @change="onChangeSelect(selectItemValue)"
-          dense
-        />
+        <v-row>
+          <v-col cols="12" sm="6" md="3">
+            <v-select
+              :items="selectItem"
+              label="工作單"
+              item-value="_id"
+              item-text="name"
+              v-model="selectItemValue"
+            />
+          </v-col>
+          <v-col cols="12" sm="6" md="3">
+            <v-menu
+              ref="menuStart"
+              v-model="menuStart"
+              :close-on-content-click="false"
+              :return-value.sync="dateStart"
+              transition="scale-transition"
+              offset-y
+              min-width="auto"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-model="dateStart"
+                  label="開始日期"
+                  prepend-icon="mdi-calendar"
+                  readonly
+                  v-bind="attrs"
+                  v-on="on"
+                />
+              </template>
+              <v-date-picker v-model="dateStart" no-title scrollable>
+                <v-spacer />
+                <v-btn text color="primary" @click="menuStart = false">
+                  Cancel
+                </v-btn>
+                <v-btn
+                  text
+                  color="primary"
+                  @click="$refs.menuStart.save(dateStart)"
+                >
+                  OK
+                </v-btn>
+              </v-date-picker>
+            </v-menu>
+          </v-col>
+          <v-col cols="12" sm="6" md="3">
+            <v-menu
+              ref="menuEnd"
+              v-model="menuEnd"
+              :close-on-content-click="false"
+              :return-value.sync="dateEnd"
+              transition="scale-transition"
+              offset-y
+              min-width="auto"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-model="dateEnd"
+                  label="結束日期"
+                  prepend-icon="mdi-calendar"
+                  readonly
+                  v-bind="attrs"
+                  v-on="on"
+                />
+              </template>
+              <v-date-picker v-model="dateStart" no-title scrollable>
+                <v-spacer />
+                <v-btn text color="primary" @click="menuEnd = false">
+                  Cancel
+                </v-btn>
+                <v-btn
+                  text
+                  color="primary"
+                  @click="$refs.menuEnd.save(dateEnd)"
+                >
+                  OK
+                </v-btn>
+              </v-date-picker>
+            </v-menu>
+          </v-col>
+          <v-col cols="12" sm="6" md="3">
+            <v-btn rounded color="primary" @click="onClickSubmit">
+              查詢
+            </v-btn>
+          </v-col>
+        </v-row>
       </v-card-text>
     </v-card>
     <br />
@@ -52,11 +129,21 @@ export default {
     return {
       tab: null,
       tabItems: [],
-      text: ['aa', 'bb', 'cc'],
       selectItem: [],
       selectItemValue: 1,
       dataTable: [],
       tempCategory: [],
+      dateStart: this.$moment
+        .utc()
+        .local()
+        .subtract(1, 'days')
+        .format('YYYY-MM-DD'),
+      dateEnd: this.$moment
+        .utc()
+        .local()
+        .format('YYYY-MM-DD'),
+      menuStart: false,
+      menuEnd: false,
     };
   },
   mounted() {
@@ -134,9 +221,9 @@ export default {
     onChangeTab(categoryId) {
       this.getTask(categoryId);
     },
-    onChangeSelect(categoryId) {
-      this.getTask(categoryId);
-      this.getRefreshTab(categoryId);
+    onClickSubmit() {
+      this.getTask(this.selectItemValue, this.dateStart, this.dateEnd);
+      this.getRefreshTab(this.selectItemValue);
     },
   },
 };

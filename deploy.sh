@@ -1,12 +1,12 @@
 function deploy() {
     local LOCAL="./"
     local USERNAME=${1}
-    local DOMAIN="52.229.156.103"
-    local REMOTE="${USERNAME}@${DOMAIN}:/var/www/html/fami01/"
+    local DOMAIN="eflink.e-formula.com"
+    local REMOTE="${USERNAME}@${DOMAIN}:/var/www/html/tzuchi_hospital_inspection/"
     local DOWNLOAD=${2}
     if [ "$DOWNLOAD" != "--download" ]; then
         # upload
-        rsync -rav --delete --filter="dir-merge,- .gitignore" ${LOCAL} ${REMOTE}
+        npm run generate && rsync -rav --delete --filter="dir-merge,- .gitignore" ${LOCAL} ${REMOTE}
     else
         # download
         rsync -rav --delete --exclude=".git" --filter="dir-merge,- .gitignore" ${REMOTE} ${LOCAL}

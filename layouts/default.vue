@@ -51,7 +51,7 @@
         class="my-2 white--text"
         @click="onCloseMenu"
       >
-        <strong>Logout</strong>
+        <strong>登出</strong>
       </v-btn>
     </v-app-bar>
 

@@ -13,35 +13,16 @@ const backendService = {
   getTask: (categoryId) => {
     const config = {
       method: 'GET',
-      url: `${process.env.backendUrl}task/?category_id=${categoryId}`,
+      url: `${process.env.backendUrl}task/status/?category_id=${categoryId}`,
       dataType: 'json',
       contentType: 'application/json',
     };
     return axios(config);
   },
-  getBaseUserById: (id) => {
+  getHistory: (categoryId) => {
     const config = {
       method: 'GET',
-      url: `${process.env.backendUrl}baseUser.php?id=${id}`,
-      dataType: 'json',
-      contentType: 'application/json',
-    };
-    return axios(config);
-  },
-  putBaseUser: (postData) => {
-    const config = {
-      method: 'PUT',
-      url: `${process.env.backendUrl}baseUser.php`,
-      data: postData,
-      dataType: 'json',
-      contentType: 'application/json',
-    };
-    return axios(config);
-  },
-  getHistory: () => {
-    const config = {
-      method: 'GET',
-      url: `${process.env.backendUrl}history.php`,
+      url: `${process.env.backendUrl}task/history/?category_id=${categoryId}`,
       dataType: 'json',
       contentType: 'application/json',
     };
