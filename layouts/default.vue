@@ -85,7 +85,7 @@ export default {
         {
           icon: 'mdi-text-box-search-outline',
           title: '巡檢清單',
-          to: '/history/',
+          to: '/task/',
         },
         {
           icon: 'mdi-text-box-remove-outline',

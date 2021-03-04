@@ -1,10 +1,19 @@
 import axios from 'axios';
 
 const backendService = {
-  getBaseUser: () => {
+  getCategory: () => {
     const config = {
       method: 'GET',
-      url: `${process.env.backendUrl}baseUser.php`,
+      url: `${process.env.backendUrl}category/`,
+      dataType: 'json',
+      contentType: 'application/json',
+    };
+    return axios(config);
+  },
+  getTask: (categoryId) => {
+    const config = {
+      method: 'GET',
+      url: `${process.env.backendUrl}task/?category_id=${categoryId}`,
       dataType: 'json',
       contentType: 'application/json',
     };
