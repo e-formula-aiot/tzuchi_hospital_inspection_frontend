@@ -70,7 +70,7 @@
                   v-on="on"
                 />
               </template>
-              <v-date-picker v-model="dateStart" no-title scrollable>
+              <v-date-picker v-model="dateEnd" no-title scrollable>
                 <v-spacer />
                 <v-btn text color="primary" @click="menuEnd = false">
                   Cancel
@@ -148,7 +148,15 @@ export default {
   },
   mounted() {
     this.getCategory();
-    this.getHistory(this.selectItemValue);
+    this.getHistory(
+      this.selectItemValue,
+      this.$moment(this.dateStart)
+        .utc()
+        .format('YYYY-MM-DDTHH:mm:ss'),
+      this.$moment(this.dateEnd)
+        .utc()
+        .format('YYYY-MM-DDTHH:mm:ss'),
+    );
   },
   created() {},
   components: {
@@ -185,9 +193,9 @@ export default {
           console.log(error.response.data.msg);
         });
     },
-    getHistory(categoryId) {
+    getHistory(categoryId, inspectionTimeStart, inspectionTimeEnd) {
       backendService
-        .getHistory(categoryId)
+        .getHistory(categoryId, inspectionTimeStart, inspectionTimeEnd)
         .then((response) => {
           this.dataTable = response.data;
         })
@@ -219,10 +227,26 @@ export default {
       });
     },
     onChangeTab(categoryId) {
-      this.getHistory(categoryId);
+      this.getHistory(
+        categoryId,
+        this.$moment(this.dateStart)
+          .utc()
+          .format('YYYY-MM-DDTHH:mm:ss'),
+        this.$moment(this.dateEnd)
+          .utc()
+          .format('YYYY-MM-DDTHH:mm:ss'),
+      );
     },
     onClickSubmit() {
-      this.getHistory(this.selectItemValue, this.dateStart, this.dateEnd);
+      this.getHistory(
+        this.selectItemValue,
+        this.$moment(this.dateStart)
+          .utc()
+          .format('YYYY-MM-DDTHH:mm:ss'),
+        this.$moment(this.dateEnd)
+          .utc()
+          .format('YYYY-MM-DDTHH:mm:ss'),
+      );
       this.getRefreshTab(this.selectItemValue);
     },
   },

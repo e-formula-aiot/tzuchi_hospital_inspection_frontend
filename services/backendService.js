@@ -10,19 +10,19 @@ const backendService = {
     };
     return axios(config);
   },
-  getTask: (categoryId) => {
+  getTask: (categoryId, inspectionTimeStart, inspectionTimeEnd) => {
     const config = {
       method: 'GET',
-      url: `${process.env.backendUrl}task/status/?category_id=${categoryId}`,
+      url: `${process.env.backendUrl}task/status/?category_id=${categoryId}&inspection_time_start=${inspectionTimeStart}&inspection_time_end=${inspectionTimeEnd}`,
       dataType: 'json',
       contentType: 'application/json',
     };
     return axios(config);
   },
-  getHistory: (categoryId) => {
+  getHistory: (categoryId, inspectionTimeStart, inspectionTimeEnd) => {
     const config = {
       method: 'GET',
-      url: `${process.env.backendUrl}task/history/?category_id=${categoryId}`,
+      url: `${process.env.backendUrl}task/history/?category_id=${categoryId}&inspection_time_start=${inspectionTimeStart}&inspection_time_end=${inspectionTimeEnd}`,
       dataType: 'json',
       contentType: 'application/json',
     };

@@ -33,7 +33,7 @@ export default {
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    titleTemplate: '%s - tzuchi_hospital_inspection_frontend',
+    titleTemplate: '%s - tzuchi_hospital_inspection',
     title: 'tzuchi_hospital_inspection_frontend',
     meta: [
       { charset: 'utf-8' },
