@@ -65,6 +65,15 @@ const backendService = {
     };
     return axios(config);
   },
+  getSummaryByCategory: (inspectionTimeStart, inspectionTimeEnd) => {
+    const config = {
+      method: 'GET',
+      url: `${process.env.backendUrl}summary/by_category?inspection_time_start=${inspectionTimeStart}&inspection_time_end=${inspectionTimeEnd}`,
+      dataType: 'json',
+      contentType: 'application/json',
+    };
+    return axios(config);
+  },
   // putHistory: () => {
   //   const config = {
   //     method: 'PUT',
