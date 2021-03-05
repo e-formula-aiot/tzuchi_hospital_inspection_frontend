@@ -94,7 +94,7 @@ export default {
         },
         {
           icon: 'mdi-text-box-remove-outline',
-          title: '異常紀錄',
+          title: '巡檢紀錄',
           to: '/aberrant',
         },
         {

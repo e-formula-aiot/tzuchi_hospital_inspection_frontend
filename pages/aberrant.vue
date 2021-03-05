@@ -2,7 +2,7 @@
   <div>
     <v-card>
       <v-card-title>
-        <span>異常紀錄</span>
+        <span>巡檢紀錄</span>
       </v-card-title>
       <v-card-text>
         <v-row>
