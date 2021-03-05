@@ -130,7 +130,7 @@ export default {
         },
         { text: '巡檢照片', value: 'inspection_image_path', width: '100px' },
         { text: '巡檢時間', value: 'inspection_time', width: '170px' },
-        { text: '巡檢執行人員', value: 'inspection_user_id', width: '130px' },
+        { text: '巡檢執行人員', value: 'inspection_user_name', width: '130px' },
         { text: '修復狀態', value: 'recovery_status', width: '100px' },
         {
           text: '修復詳細說明文字',
@@ -139,9 +139,9 @@ export default {
         },
         { text: '修復照片', value: 'recovery_image_path', width: '100px' },
         { text: '修復時間', value: 'recovery_time', width: '170px' },
-        { text: '修復執行人員', value: 'recovery_user_id', width: '130px' },
+        { text: '修復執行人員', value: 'recovery_user_name', width: '130px' },
         { text: '稽核時間', value: 'audit_time', width: '170px' },
-        { text: '稽核執行人員', value: 'audit_user_id', width: '130px' },
+        { text: '稽核執行人員', value: 'audit_user_name', width: '130px' },
         {
           text: '',
           align: 'center',
