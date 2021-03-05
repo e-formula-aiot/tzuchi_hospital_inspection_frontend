@@ -1,5 +1,5 @@
 function deploy() {
-    local LOCAL="./"
+    local LOCAL="./dist/"
     local USERNAME=${1}
     local DOMAIN="eflink.e-formula.com"
     local REMOTE="${USERNAME}@${DOMAIN}:/var/www/html/tzuchi_hospital_inspection/"
