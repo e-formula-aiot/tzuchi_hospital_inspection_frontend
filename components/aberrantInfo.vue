@@ -99,6 +99,8 @@
 </template>
 
 <script>
+import backendService from '@/services/backendService';
+
 export default {
   name: 'aberrantInfo',
   props: {
@@ -153,6 +155,7 @@ export default {
       //     bb: null,
       //   },
       dialogAudit: false,
+      inspectionHistoryId: null,
     };
   },
   mounted() {},
@@ -162,6 +165,7 @@ export default {
     //   this.dialog = true;
     // },
     onClickAuditTask(data) {
+      this.inspectionHistoryId = data._id;
       this.dialogAudit = true;
     },
     // onClickClose() {
@@ -174,7 +178,15 @@ export default {
       this.dialogAudit = false;
     },
     onClickAuditSave() {
-      this.dialogAudit = false;
+      backendService
+        .putWebAudit(this.inspectionHistoryId)
+        .then((response) => {
+          this.dialogAudit = false;
+          this.$router.go();
+        })
+        .catch((error) => {
+          console.log(error.response.data.msg);
+        });
     },
   },
 };

@@ -74,15 +74,18 @@ const backendService = {
     };
     return axios(config);
   },
-  // putHistory: () => {
-  //   const config = {
-  //     method: 'PUT',
-  //     url: `${process.env.backendUrl}history.php`,
-  //     dataType: 'json',
-  //     contentType: 'application/json',
-  //   };
-  //   return axios(config);
-  // },
+  putWebAudit: (inspectionHistoryId) => {
+    const config = {
+      headers: {
+        Authorization: makeAuthorizationHeader(),
+      },
+      method: 'PUT',
+      url: `${process.env.backendUrl}task/web_audit/${inspectionHistoryId}`,
+      dataType: 'json',
+      contentType: 'application/json',
+    };
+    return axios(config);
+  },
 };
 
 export default backendService;
