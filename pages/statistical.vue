@@ -172,6 +172,7 @@ export default {
         .format('YYYY-MM-DDTHH:mm:ss'),
       this.$moment(this.dateEnd)
         .utc()
+        .add(1, 'days')
         .format('YYYY-MM-DDTHH:mm:ss'),
     );
   },
@@ -245,6 +246,7 @@ export default {
           .format('YYYY-MM-DDTHH:mm:ss'),
         this.$moment(this.dateEnd)
           .utc()
+          .add(1, 'days')
           .format('YYYY-MM-DDTHH:mm:ss'),
       );
     },
