@@ -198,6 +198,20 @@ export default {
         .getHistory(categoryId, inspectionTimeStart, inspectionTimeEnd)
         .then((response) => {
           this.dataTable = response.data;
+
+          response.data.forEach((element, index) => {
+            if (!element.inspection_image_path) {
+              this.dataTable[
+                index
+              ].inspection_image_path = `${this.$nuxt.context.env.baseUrl}/no_photo.png`;
+            }
+
+            if (!element.recovery_image_path) {
+              this.dataTable[
+                index
+              ].recovery_image_path = `${this.$nuxt.context.env.baseUrl}/no_photo.png`;
+            }
+          });
         })
         .catch((error) => {
           console.log(error.response.data.msg);
