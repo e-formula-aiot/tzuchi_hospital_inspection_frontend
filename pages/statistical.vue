@@ -109,14 +109,14 @@ export default {
   data() {
     return {
       // series: [
-      // {
-      //   name: '總務',
-      //   data: [44, 55, 41, 64, 22, 43, 21, 690, 1100, 1200],
-      // },
-      // {
-      //   name: '庶務',
-      //   data: [400, 430, 448, 470, 540, 580, 690, 1100, 1200, 1380],
-      // },
+      //   {
+      //     name: '總務',
+      //     data: [44, 55, 41, 64, 22, 43, 21, 690, 1100, 1200],
+      //   },
+      //   {
+      //     name: '庶務',
+      //     data: [400, 430, 448, 470, 540, 580, 690, 1100, 1200, 1380],
+      //   },
       // ],
       series: [],
       chartOptions: {
@@ -133,7 +133,7 @@ export default {
           },
         },
         dataLabels: {
-          enabled: true,
+          enabled: false,
           offsetX: 0,
           style: {
             fontSize: '12px',
@@ -188,9 +188,6 @@ export default {
           const tempAudited = [];
           const tempTotal = [];
 
-          this.series = [];
-          this.chartOptions.xaxis.categories = [];
-
           response.data.forEach((element) => {
             if (element.subcategory_name !== null) {
               tempSubcategoryName = `${element.category_name}-${element.subcategory_name}`;
@@ -239,6 +236,9 @@ export default {
         });
     },
     onClickSubmit() {
+      this.series = [];
+      this.chartOptions.xaxis.categories = [];
+
       this.getSummaryByCategory(
         this.$moment(this.dateStart)
           .utc()
