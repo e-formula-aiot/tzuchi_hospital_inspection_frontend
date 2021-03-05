@@ -37,7 +37,9 @@
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
 
-      <v-img max-width="40" :src="`${$nuxt.context.env.baseUrl}/logo.png`" />
+      <a href="/task">
+        <v-img max-width="40" :src="`${$nuxt.context.env.baseUrl}/logo.png`" />
+      </a>
       <strong><h3>慈濟巡檢後台管理系統</h3></strong>
       <v-spacer />
 
