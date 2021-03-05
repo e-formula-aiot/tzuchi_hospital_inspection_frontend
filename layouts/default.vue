@@ -32,7 +32,7 @@
       clipped-left
       fixed
       app
-      v-if="this.$route.path !== '/Login/' && this.$route.path !== '/Login'"
+      v-if="this.$route.path !== '/' && this.$route.path !== ''"
       class="white--text blue darken-1"
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
@@ -41,9 +41,10 @@
       <strong><h3>慈濟巡檢後台管理系統</h3></strong>
       <v-spacer />
 
+      Hi, {{ userName }}
       <v-btn
-        to="/Login/"
-        key="Login"
+        to="/"
+        key="/"
         link
         router
         text
@@ -76,6 +77,8 @@
 </template>
 
 <script>
+const Cookie = process.client ? require('js-cookie') : undefined;
+
 export default {
   data() {
     return {
@@ -103,6 +106,8 @@ export default {
           to: '/account/',
         },
       ],
+      userName:
+        Cookie.get('username') !== undefined ? Cookie.get('username') : '',
     };
   },
   methods: {
