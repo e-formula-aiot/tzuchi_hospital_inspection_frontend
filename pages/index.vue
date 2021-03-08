@@ -11,7 +11,7 @@
               <span class="card-title"> 慈濟巡檢後台管理系統 </span>
             </v-col>
           </v-card-title>
-          <form>
+          <v-form @submit.prevent="onSubmit">
             <v-text-field
               v-model="employee_id"
               append-icon="mdi-username-tie"
@@ -39,10 +39,10 @@
               清除
             </v-btn>
             <!-- <v-spacer /> -->
-            <v-btn color="primary" @click="onSubmit">
+            <v-btn type="submit" color="primary">
               登入
             </v-btn>
-          </form>
+          </v-form>
         </div>
       </v-col>
     </v-card>
