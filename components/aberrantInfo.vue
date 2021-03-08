@@ -13,18 +13,37 @@
       }"
       class="elevation-1"
     >
+      <template v-slot:item.inspection_status="{ item }">
+        {{ item.inspection_status === 0 ? 'NG' : 'OK' }}
+      </template>
+      <template v-slot:item.recovery_status="{ item }">
+        {{ item.recovery_status === 0 ? 'NG' : 'OK' }}
+      </template>
+
       <template v-slot:item.inspection_time="{ item }">
-        {{ $moment(item.inspection_time).format('YYYY-MM-DD HH:mm:ss') }}
+        {{
+          $moment(item.inspection_time)
+            .local()
+            .format('YYYY-MM-DD HH:mm:ss')
+        }}
       </template>
       <template v-slot:item.recovery_time="{ item }">
         <div v-if="item.recovery_time !== null">
-          {{ $moment(item.recovery_time).format('YYYY-MM-DD HH:mm:ss') }}
+          {{
+            $moment(item.recovery_time)
+              .local()
+              .format('YYYY-MM-DD HH:mm:ss')
+          }}
         </div>
         <div v-else>{{ item.recovery_time }}</div>
       </template>
       <template v-slot:item.audit_time="{ item }">
         <div v-if="item.audit_time !== null">
-          {{ $moment(item.audit_time).format('YYYY-MM-DD HH:mm:ss') }}
+          {{
+            $moment(item.audit_time)
+              .local()
+              .format('YYYY-MM-DD HH:mm:ss')
+          }}
         </div>
         <div v-else>{{ item.audit_time }}</div>
       </template>
