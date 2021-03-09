@@ -52,51 +52,41 @@
         <img
           :src="item.inspection_image_path"
           style="width: 50px; height:50px"
+          @click="onClickImageShow(item.inspection_image_path)"
         />
       </template>
       <template v-slot:item.recovery_image_path="{ item }">
-        <img :src="item.recovery_image_path" style="width: 50px; height:50px" />
+        <img
+          :src="item.recovery_image_path"
+          style="width: 50px; height:50px"
+          @click="onClickImageShow(item.recovery_image_path)"
+        />
       </template>
       <template v-slot:item.action="{ item }">
-        <!-- <v-icon class="mr-2" @click="onClickEditTask(item)">
-          mdi-pencil
-        </v-icon> -->
         <v-icon class="mr-2" @click="onClickAuditTask(item)">
           mdi-check-box-multiple-outline
         </v-icon>
       </template>
     </v-data-table>
 
-    <!-- <v-dialog v-model="dialog" max-width="800px">
+    <v-dialog
+      v-model="dialogImg"
+      max-width="1000px"
+      transition="dialog-bottom-transition"
+    >
       <v-card>
         <v-card-title>
-          <span>修改</span>
+          <v-spacer />
+          <v-btn icon @click="dialogImg = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
         </v-card-title>
 
         <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field v-model="editedItem.aa" label="Dessert name" />
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field v-model="editedItem.bb" label="Calories" />
-              </v-col>
-            </v-row>
-          </v-container>
+          <img :src="dialogImagePath" style="width: 100%;" />
         </v-card-text>
-
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="blue darken-1" text @click="onClickClose()">
-            取消
-          </v-btn>
-          <v-btn color="blue darken-1" text @click="onClickSave()">
-            送出
-          </v-btn>
-        </v-card-actions>
       </v-card>
-    </v-dialog> -->
+    </v-dialog>
     <v-dialog v-model="dialogAudit" max-width="500px">
       <v-card>
         <v-card-title>請確認</v-card-title>
@@ -105,7 +95,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="blue darken-1" text @click="onClickAuditClose()">
+          <v-btn color="blue darken-1" text @click="dialogAudit = false">
             取消
           </v-btn>
           <v-btn color="blue darken-1" text @click="onClickAuditSave()">
@@ -168,34 +158,20 @@ export default {
           sortable: false,
         },
       ],
-      //   dialog: false,
-      //   editedItem: {
-      //     aa: null,
-      //     bb: null,
-      //   },
       dialogAudit: false,
+      dialogImg: false,
+      dialogImagePath: null,
       inspectionHistoryId: null,
     };
   },
   mounted() {},
   created() {},
   methods: {
-    // onClickEditTask(data) {
-    //   this.dialog = true;
-    // },
     onClickAuditTask(data) {
       this.inspectionHistoryId = data._id;
       this.dialogAudit = true;
     },
-    // onClickClose() {
-    //   this.dialog = false;
-    // },
-    // onClickSave(data) {
-    //   this.dialog = false;
-    // },
-    onClickAuditClose() {
-      this.dialogAudit = false;
-    },
+
     onClickAuditSave() {
       backendService
         .putWebAudit(this.inspectionHistoryId)
@@ -209,6 +185,10 @@ export default {
             snackbar_msg: error.response.data.msg,
           };
         });
+    },
+    onClickImageShow(path) {
+      this.dialogImg = true;
+      this.dialogImagePath = path;
     },
   },
 };
