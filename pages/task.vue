@@ -1,5 +1,7 @@
 <template>
   <div>
+    <snackbar v-model="snackbarData" />
+
     <v-card>
       <v-card-title>
         <span>巡檢清單</span>
@@ -127,6 +129,7 @@ export default {
   name: 'task',
   data() {
     return {
+      snackbarData: undefined,
       tab: null,
       tabItems: [],
       selectItem: [],
@@ -191,7 +194,10 @@ export default {
           });
         })
         .catch((error) => {
-          console.log(error.response.data.msg);
+          this.snackbarData = {
+            snackbar: true,
+            snackbar_msg: error.response.data.msg,
+          };
         });
     },
     getTask(categoryId, inspectionTimeStart, inspectionTimeEnd) {
@@ -201,7 +207,10 @@ export default {
           this.dataTable = response.data;
         })
         .catch((error) => {
-          console.log(error.response.data.msg);
+          this.snackbarData = {
+            snackbar: true,
+            snackbar_msg: error.response.data.msg,
+          };
         });
     },
     getRefreshTab(categoryId) {

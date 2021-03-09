@@ -1,5 +1,7 @@
 <template>
   <div>
+    <snackbar v-model="snackbarData" />
+
     <v-card>
       <v-card-title>
         <span>人員管理</span>
@@ -30,6 +32,8 @@ export default {
   name: 'account',
   data() {
     return {
+      snackbarData: undefined,
+
       search: '',
       headers: [
         { text: '工號', value: 'employee_id' },
@@ -55,7 +59,10 @@ export default {
           this.dataTable = response.data;
         })
         .catch((error) => {
-          console.log(error.response.data.msg);
+          this.snackbarData = {
+            snackbar: true,
+            snackbar_msg: error.response.data.msg,
+          };
         });
     },
   },

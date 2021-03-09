@@ -204,7 +204,10 @@ export default {
           this.$router.go();
         })
         .catch((error) => {
-          console.log(error.response.data.msg);
+          this.snackbarData = {
+            snackbar: true,
+            snackbar_msg: error.response.data.msg,
+          };
         });
     },
   },

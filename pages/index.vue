@@ -1,55 +1,63 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-card>
-      <v-col>
-        <div class="text-center">
-          <img class="myLogo" :src="`${$nuxt.context.env.baseUrl}/logo.png`" />
-        </div>
-        <div justify="center" align="center">
-          <v-card-title class="headline">
-            <v-col cols="12">
-              <span class="card-title"> 慈濟巡檢後台管理系統 </span>
-            </v-col>
-          </v-card-title>
-          <v-form @submit.prevent="onSubmit">
-            <v-text-field
-              v-model="employee_id"
-              append-icon="mdi-username-tie"
-              :error-messages="accountErrors"
-              label="工號"
-              placeholder="*必須輸入"
-              required
-              @input="$v.employee_id.$touch()"
-              @blur="$v.employee_id.$touch()"
-            />
-            <v-text-field
-              v-model="password"
-              :error-messages="pwdErrors"
-              label="密碼"
-              placeholder="*必須輸入"
-              required
-              :type="showPwd ? 'text' : 'password'"
-              :append-icon="showPwd ? 'mdi-eye' : 'mdi-eye-off'"
-              @input="$v.password.$touch()"
-              @blur="$v.password.$touch()"
-              @click:append="showPwd = !showPwd"
-            />
+  <div>
+    <snackbar v-model="snackbarData" />
 
-            <v-btn @click="clear">
-              清除
-            </v-btn>
-            <!-- <v-spacer /> -->
-            <v-btn type="submit" color="primary">
-              登入
-            </v-btn>
-          </v-form>
-        </div>
-      </v-col>
-    </v-card>
-  </v-row>
+    <v-row justify="center" align="center">
+      <v-card>
+        <v-col>
+          <div class="text-center">
+            <img
+              class="myLogo"
+              :src="`${$nuxt.context.env.baseUrl}/logo.png`"
+            />
+          </div>
+          <div justify="center" align="center">
+            <v-card-title class="headline">
+              <v-col cols="12">
+                <span class="card-title"> 慈濟巡檢後台管理系統 </span>
+              </v-col>
+            </v-card-title>
+            <v-form @submit.prevent="onSubmit">
+              <v-text-field
+                v-model="employee_id"
+                append-icon="mdi-username-tie"
+                :error-messages="accountErrors"
+                label="工號"
+                placeholder="*必須輸入"
+                required
+                @input="$v.employee_id.$touch()"
+                @blur="$v.employee_id.$touch()"
+              />
+              <v-text-field
+                v-model="password"
+                :error-messages="pwdErrors"
+                label="密碼"
+                placeholder="*必須輸入"
+                required
+                :type="showPwd ? 'text' : 'password'"
+                :append-icon="showPwd ? 'mdi-eye' : 'mdi-eye-off'"
+                @input="$v.password.$touch()"
+                @blur="$v.password.$touch()"
+                @click:append="showPwd = !showPwd"
+              />
+
+              <v-btn @click="clear">
+                清除
+              </v-btn>
+              <!-- <v-spacer /> -->
+              <v-btn type="submit" color="primary">
+                登入
+              </v-btn>
+            </v-form>
+          </div>
+        </v-col>
+      </v-card>
+    </v-row>
+  </div>
 </template>
 
 <script>
+import snackbar from '@/components/snackbar.vue';
 import backendService from '@/services/backendService';
 import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
@@ -64,6 +72,7 @@ export default {
   },
   data() {
     return {
+      snackbarData: undefined,
       employee_id: '',
       password: '',
       showPwd: false,
@@ -89,8 +98,8 @@ export default {
       return errors;
     },
   },
-  created() {
-    // Cookie.set('username', 'family');
+  components: {
+    snackbar,
   },
   methods: {
     onSubmit() {
@@ -110,7 +119,10 @@ export default {
             this.getWhoAmI(response.data.user_id);
           })
           .catch((error) => {
-            console.log(error.response.data.msg);
+            this.snackbarData = {
+              snackbar: true,
+              snackbar_msg: error.response.data.msg,
+            };
           });
       }
     },
@@ -122,7 +134,10 @@ export default {
           this.$router.push('/task');
         })
         .catch((error) => {
-          console.log(error.response.data.msg);
+          this.snackbarData = {
+            snackbar: true,
+            snackbar_msg: error.response.data.msg,
+          };
         });
     },
     clear() {

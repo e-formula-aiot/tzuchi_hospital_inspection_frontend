@@ -1,5 +1,7 @@
 <template>
   <div>
+    <snackbar v-model="snackbarData" />
+
     <v-card>
       <v-card-title>
         <span>統計分析</span>
@@ -108,6 +110,7 @@ export default {
   name: 'statistical',
   data() {
     return {
+      snackbarData: undefined,
       // series: [
       //   {
       //     name: '總務',
@@ -233,7 +236,10 @@ export default {
           );
         })
         .catch((error) => {
-          console.log(error.response.data.msg);
+          this.snackbarData = {
+            snackbar: true,
+            snackbar_msg: error.response.data.msg,
+          };
         });
     },
     onClickSubmit() {
