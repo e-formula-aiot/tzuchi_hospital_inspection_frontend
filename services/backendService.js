@@ -38,37 +38,60 @@ const backendService = {
     };
     return axios(config);
   },
-  getCategory: () => {
+  getOrg: () => {
     const config = {
       method: 'GET',
-      url: `${process.env.backendUrl}category/`,
+      url: `${process.env.backendUrl}org/`,
       dataType: 'json',
       contentType: 'application/json',
     };
     return axios(config);
   },
-  getTask: (categoryId, inspectionTimeStart, inspectionTimeEnd) => {
+  getCategory: (organisationId) => {
     const config = {
       method: 'GET',
-      url: `${process.env.backendUrl}task/status/?category_id=${categoryId}&inspection_time_start=${inspectionTimeStart}&inspection_time_end=${inspectionTimeEnd}`,
+      url: `${process.env.backendUrl}category/?organisation_id=${organisationId}`,
       dataType: 'json',
       contentType: 'application/json',
     };
     return axios(config);
   },
-  getHistory: (categoryId, inspectionTimeStart, inspectionTimeEnd) => {
+  getTask: (
+    organisationId,
+    categoryId,
+    inspectionTimeStart,
+    inspectionTimeEnd,
+  ) => {
     const config = {
       method: 'GET',
-      url: `${process.env.backendUrl}task/history/?category_id=${categoryId}&inspection_time_start=${inspectionTimeStart}&inspection_time_end=${inspectionTimeEnd}`,
+      url: `${process.env.backendUrl}task/status/?organisation_id=${organisationId}&category_id=${categoryId}&inspection_time_start=${inspectionTimeStart}&inspection_time_end=${inspectionTimeEnd}`,
       dataType: 'json',
       contentType: 'application/json',
     };
     return axios(config);
   },
-  getSummaryByCategory: (inspectionTimeStart, inspectionTimeEnd) => {
+  getHistory: (
+    organisationId,
+    categoryId,
+    inspectionTimeStart,
+    inspectionTimeEnd,
+  ) => {
     const config = {
       method: 'GET',
-      url: `${process.env.backendUrl}summary/by_category?inspection_time_start=${inspectionTimeStart}&inspection_time_end=${inspectionTimeEnd}`,
+      url: `${process.env.backendUrl}task/history/?organisation_id=${organisationId}&category_id=${categoryId}&inspection_time_start=${inspectionTimeStart}&inspection_time_end=${inspectionTimeEnd}`,
+      dataType: 'json',
+      contentType: 'application/json',
+    };
+    return axios(config);
+  },
+  getSummaryByCategory: (
+    organisationId,
+    inspectionTimeStart,
+    inspectionTimeEnd,
+  ) => {
+    const config = {
+      method: 'GET',
+      url: `${process.env.backendUrl}summary/by_category?organisation_id=${organisationId}&inspection_time_start=${inspectionTimeStart}&inspection_time_end=${inspectionTimeEnd}`,
       dataType: 'json',
       contentType: 'application/json',
     };

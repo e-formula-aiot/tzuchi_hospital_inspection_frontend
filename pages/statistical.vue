@@ -8,6 +8,15 @@
       </v-card-title>
       <v-card-text>
         <v-row>
+          <v-col cols="12" sm="6" md="4">
+            <v-select
+              :items="selectOrgItem"
+              label="院區"
+              item-value="_id"
+              item-text="name"
+              v-model="selectOrgItemValue"
+            />
+          </v-col>
           <v-col cols="12" sm="6" md="3">
             <v-menu
               ref="menuStart"
@@ -78,7 +87,7 @@
               </v-date-picker>
             </v-menu>
           </v-col>
-          <v-col cols="12" sm="6" md="3">
+          <v-col cols="12" sm="6" md="2">
             <v-btn rounded color="primary" @click="onClickSubmit">
               查詢
             </v-btn>
@@ -111,6 +120,8 @@ export default {
   data() {
     return {
       snackbarData: undefined,
+      selectOrgItem: [],
+      selectOrgItemValue: 1,
       // series: [
       //   {
       //     name: '總務',
@@ -169,20 +180,45 @@ export default {
     apexchart: VueApexCharts,
   },
   mounted() {
-    this.getSummaryByCategory(
-      this.$moment(this.dateStart)
-        .utc()
-        .format('YYYY-MM-DDTHH:mm:ss'),
-      this.$moment(this.dateEnd)
-        .utc()
-        .add(1, 'days')
-        .format('YYYY-MM-DDTHH:mm:ss'),
-    );
+    this.getOrg();
+    this.onClickSubmit();
   },
   methods: {
-    getSummaryByCategory(inspectionTimeStart, inspectionTimeEnd) {
+    getOrg() {
       backendService
-        .getSummaryByCategory(inspectionTimeStart, inspectionTimeEnd)
+        .getOrg()
+        .then((response) => {
+          response.data.forEach((element) => {
+            if (
+              this.selectOrgItem.findIndex((x) => {
+                return x.name === element.organisation_name;
+              }) === -1
+            ) {
+              this.selectOrgItem.push({
+                _id: element._id,
+                name: element.organisation_name,
+              });
+            }
+          });
+        })
+        .catch((error) => {
+          this.snackbarData = {
+            snackbar: true,
+            snackbar_msg: error.response.data.msg,
+          };
+        });
+    },
+    getSummaryByCategory(
+      organisationId,
+      inspectionTimeStart,
+      inspectionTimeEnd,
+    ) {
+      backendService
+        .getSummaryByCategory(
+          organisationId,
+          inspectionTimeStart,
+          inspectionTimeEnd,
+        )
         .then((response) => {
           let tempSubcategoryName = '';
           const tempNG = [];
@@ -191,6 +227,12 @@ export default {
           const tempOK = [];
           const tempAudited = [];
           const tempTotal = [];
+          this.series = [];
+          this.chartOptions = {
+            xaxis: {
+              categories: [],
+            },
+          };
 
           response.data.forEach((element) => {
             if (element.subcategory_name !== null) {
@@ -243,10 +285,8 @@ export default {
         });
     },
     onClickSubmit() {
-      this.series = [];
-      this.chartOptions.xaxis.categories = [];
-
       this.getSummaryByCategory(
+        this.selectOrgItemValue,
         this.$moment(this.dateStart)
           .utc()
           .format('YYYY-MM-DDTHH:mm:ss'),

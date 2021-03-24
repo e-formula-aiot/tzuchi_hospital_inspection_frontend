@@ -10,6 +10,16 @@
         <v-row>
           <v-col cols="12" sm="6" md="3">
             <v-select
+              :items="selectOrgItem"
+              label="院區"
+              item-value="_id"
+              item-text="name"
+              v-model="selectOrgItemValue"
+              @change="onChangeOrg(selectOrgItemValue)"
+            />
+          </v-col>
+          <v-col cols="12" sm="6" md="2">
+            <v-select
               :items="selectItem"
               label="工作單"
               item-value="_id"
@@ -87,7 +97,7 @@
               </v-date-picker>
             </v-menu>
           </v-col>
-          <v-col cols="12" sm="6" md="3">
+          <v-col cols="12" sm="6" md="1">
             <v-btn rounded color="primary" @click="onClickSubmit">
               查詢
             </v-btn>
@@ -132,8 +142,10 @@ export default {
       snackbarData: undefined,
       tab: null,
       tabItems: [],
+      selectOrgItem: [],
+      selectOrgItemValue: 1,
       selectItem: [],
-      selectItemValue: 1,
+      selectItemValue: 0,
       dataTable: [],
       tempCategory: [],
       dateStart: this.$moment
@@ -150,28 +162,46 @@ export default {
     };
   },
   mounted() {
-    this.getCategory();
-    this.getTask(
-      this.selectItemValue,
-      this.$moment(this.dateStart)
-        .utc()
-        .format('YYYY-MM-DDTHH:mm:ss'),
-      this.$moment(this.dateEnd)
-        .utc()
-        .add(1, 'days')
-        .format('YYYY-MM-DDTHH:mm:ss'),
-    );
+    this.getOrg();
+    this.getCategory(this.selectOrgItemValue);
   },
   created() {},
   components: {
     TaskInfo,
   },
   methods: {
-    getCategory() {
+    getOrg() {
       backendService
-        .getCategory()
+        .getOrg()
+        .then((response) => {
+          response.data.forEach((element) => {
+            if (
+              this.selectOrgItem.findIndex((x) => {
+                return x.name === element.organisation_name;
+              }) === -1
+            ) {
+              this.selectOrgItem.push({
+                _id: element._id,
+                name: element.organisation_name,
+              });
+            }
+          });
+        })
+        .catch((error) => {
+          this.snackbarData = {
+            snackbar: true,
+            snackbar_msg: error.response.data.msg,
+          };
+        });
+    },
+    getCategory(organisationId) {
+      backendService
+        .getCategory(organisationId)
         .then((response) => {
           this.tempCategory = response.data;
+
+          this.selectItem = [];
+          this.tabItems = [];
 
           response.data.forEach((element) => {
             if (
@@ -192,6 +222,10 @@ export default {
               });
             }
           });
+
+          this.selectItemValue = response.data[0]._id;
+
+          this.onClickSubmit();
         })
         .catch((error) => {
           this.snackbarData = {
@@ -200,9 +234,19 @@ export default {
           };
         });
     },
-    getTask(categoryId, inspectionTimeStart, inspectionTimeEnd) {
+    getTask(
+      organisationId,
+      categoryId,
+      inspectionTimeStart,
+      inspectionTimeEnd,
+    ) {
       backendService
-        .getTask(categoryId, inspectionTimeStart, inspectionTimeEnd)
+        .getTask(
+          organisationId,
+          categoryId,
+          inspectionTimeStart,
+          inspectionTimeEnd,
+        )
         .then((response) => {
           this.dataTable = response.data;
         })
@@ -238,6 +282,7 @@ export default {
     },
     onChangeTab(categoryId) {
       this.getTask(
+        this.selectOrgItemValue,
         categoryId,
         this.$moment(this.dateStart)
           .utc()
@@ -248,8 +293,12 @@ export default {
           .format('YYYY-MM-DDTHH:mm:ss'),
       );
     },
+    onChangeOrg(organisationId) {
+      this.getCategory(organisationId);
+    },
     onClickSubmit() {
       this.getTask(
+        this.selectOrgItemValue,
         this.selectItemValue,
         this.$moment(this.dateStart)
           .utc()
