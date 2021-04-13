@@ -28,7 +28,7 @@
             <v-icon small class="mr-2" @click="onDialogEditOpen(item)">
               mdi-pencil
             </v-icon>
-            <v-icon small @click="deleteOrgById(item)">
+            <v-icon small @click="onDeleteConfirmationVisible(item)">
               mdi-delete
             </v-icon>
           </template>
@@ -81,6 +81,13 @@
         </v-card>
       </v-form>
     </v-Dialog>
+
+    <confirmation
+      :visible.sync="visibleConfirmation"
+      :content="'確定刪除?'"
+      @no-click="onDeleteConfirmationNoClick"
+      @yes-click="onDeleteConfirmationYesClick"
+    />
   </div>
 </template>
 
@@ -88,6 +95,7 @@
 import backendService from '@/services/backendService';
 import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
+import confirmation from '@/components/confirmation.vue';
 
 export default {
   mixins: [validationMixin],
@@ -100,6 +108,7 @@ export default {
   data() {
     return {
       snackbarData: undefined,
+      visibleConfirmation: false,
       orgSearch: '',
       orgHeaders: [
         { text: 'ID', value: '_id' },
@@ -127,7 +136,9 @@ export default {
     this.getOrg();
   },
   created() {},
-  components: {},
+  components: {
+    confirmation,
+  },
   methods: {
     getOrg() {
       backendService
@@ -189,9 +200,9 @@ export default {
           });
       }
     },
-    deleteOrgById(item) {
+    deleteOrgById(id) {
       backendService
-        .deleteOrgById(item._id)
+        .deleteOrgById(id)
         .then((response) => {
           this.getOrg();
           this.orgDialog = false;
@@ -214,6 +225,17 @@ export default {
     },
     onDialogClose() {
       this.orgDialog = false;
+    },
+    onDeleteConfirmationVisible(item) {
+      this.orgDialogData._id = item._id;
+      this.visibleConfirmation = true;
+    },
+    onDeleteConfirmationNoClick() {
+      this.visibleConfirmation = false;
+    },
+    onDeleteConfirmationYesClick() {
+      this.deleteOrgById(this.orgDialogData._id);
+      this.visibleConfirmation = false;
     },
   },
 };
