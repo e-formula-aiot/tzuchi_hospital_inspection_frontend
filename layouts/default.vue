@@ -103,7 +103,12 @@ export default {
           to: '/statistical/',
         },
         {
-          icon: 'mdi-account-circle-outline',
+          icon: 'mdi-file-tree-outline',
+          title: '組織管理',
+          to: '/organization/',
+        },
+        {
+          icon: 'mdi-account-group',
           title: '人員管理',
           to: '/account/',
         },

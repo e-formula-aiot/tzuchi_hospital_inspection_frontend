@@ -40,8 +40,58 @@ const backendService = {
   },
   getOrg: () => {
     const config = {
+      headers: {
+        Authorization: makeAuthorizationHeader(),
+      },
       method: 'GET',
       url: `${process.env.backendUrl}org/`,
+      dataType: 'json',
+      contentType: 'application/json',
+    };
+    return axios(config);
+  },
+  getOrgById: (id) => {
+    const config = {
+      headers: {
+        Authorization: makeAuthorizationHeader(),
+      },
+      method: 'GET',
+      url: `${process.env.backendUrl}org/${id}`,
+      dataType: 'json',
+      contentType: 'application/json',
+    };
+    return axios(config);
+  },
+  postOrg: (postData) => {
+    const config = {
+      headers: {
+        Authorization: makeAuthorizationHeader(),
+      },
+      method: 'POST',
+      url: `${process.env.backendUrl}org/`,
+      data: postData,
+      dataType: 'json',
+      contentType: 'application/json',
+    };
+    return axios(config);
+  },
+  putOrgById: (id, postData) => {
+    const config = {
+      headers: {
+        Authorization: makeAuthorizationHeader(),
+      },
+      method: 'PUT',
+      url: `${process.env.backendUrl}org/${id}`,
+      data: postData,
+      dataType: 'json',
+      contentType: 'application/json',
+    };
+    return axios(config);
+  },
+  deleteOrgById: (id) => {
+    const config = {
+      method: 'DELETE',
+      url: `${process.env.backendUrl}org/${id}`,
       dataType: 'json',
       contentType: 'application/json',
     };

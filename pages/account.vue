@@ -33,7 +33,6 @@ export default {
   data() {
     return {
       snackbarData: undefined,
-
       search: '',
       headers: [
         { text: '工號', value: 'employee_id' },
