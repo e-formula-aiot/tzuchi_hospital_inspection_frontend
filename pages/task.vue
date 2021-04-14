@@ -163,7 +163,7 @@ export default {
   },
   mounted() {
     this.getOrg();
-    this.getCategory(this.selectOrgItemValue);
+    this.getCategoryByOrganisationId(this.selectOrgItemValue);
   },
   created() {},
   components: {
@@ -194,9 +194,9 @@ export default {
           };
         });
     },
-    getCategory(organisationId) {
+    getCategoryByOrganisationId(organisationId) {
       backendService
-        .getCategory(organisationId)
+        .getCategoryByOrganisationId(organisationId)
         .then((response) => {
           this.tempCategory = response.data;
 
@@ -294,7 +294,7 @@ export default {
       );
     },
     onChangeOrg(organisationId) {
-      this.getCategory(organisationId);
+      this.getCategoryByOrganisationId(organisationId);
     },
     onClickSubmit() {
       this.getTask(
