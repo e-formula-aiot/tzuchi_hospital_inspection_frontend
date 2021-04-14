@@ -49,14 +49,18 @@
         </v-btn>
       </v-card-title>
       <v-card-text>
-        <v-select
-          :items="selectOrgItem"
-          label="院區"
-          item-value="_id"
-          item-text="name"
-          v-model="selectOrgItemValue"
-          @change="onChangeOrg(selectOrgItemValue)"
-        />
+        <v-row>
+          <v-col cols="12">
+            <v-select
+              :items="selectOrgItem"
+              label="院區"
+              item-value="_id"
+              item-text="name"
+              v-model="selectOrgItemValue"
+              @change="onChangeOrg(selectOrgItemValue)"
+            />
+          </v-col>
+        </v-row>
 
         <v-data-table
           fixed-header
