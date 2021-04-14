@@ -4,15 +4,6 @@ import Cookies from 'js-cookie';
 const makeAuthorizationHeader = () => `Bearer ${Cookies.get('access_token')}`;
 
 const backendService = {
-  getUser: () => {
-    const config = {
-      method: 'GET',
-      url: `${process.env.backendUrl}user/`,
-      dataType: 'json',
-      contentType: 'application/json',
-    };
-    return axios(config);
-  },
   getWhoAmI: (_id) => {
     const config = {
       headers: {
@@ -33,6 +24,68 @@ const backendService = {
       method: 'POST',
       url: `${process.env.backendUrl}/auth/login`,
       data: postData,
+      dataType: 'json',
+      contentType: 'application/json',
+    };
+    return axios(config);
+  },
+  getUser: () => {
+    const config = {
+      method: 'GET',
+      url: `${process.env.backendUrl}user/`,
+      dataType: 'json',
+      contentType: 'application/json',
+    };
+    return axios(config);
+  },
+  getUserById: (id) => {
+    const config = {
+      method: 'GET',
+      url: `${process.env.backendUrl}user/${id}`,
+      dataType: 'json',
+      contentType: 'application/json',
+    };
+    return axios(config);
+  },
+  getUserByDeptId: (departmentId) => {
+    const config = {
+      method: 'GET',
+      url: `${process.env.backendUrl}user/?department_id=${departmentId}`,
+      dataType: 'json',
+      contentType: 'application/json',
+    };
+    return axios(config);
+  },
+  postUser: (postData) => {
+    const config = {
+      headers: {
+        Authorization: makeAuthorizationHeader(),
+      },
+      method: 'POST',
+      url: `${process.env.backendUrl}user/`,
+      data: postData,
+      dataType: 'json',
+      contentType: 'application/json',
+    };
+    return axios(config);
+  },
+  putUserById: (id, postData) => {
+    const config = {
+      headers: {
+        Authorization: makeAuthorizationHeader(),
+      },
+      method: 'PUT',
+      url: `${process.env.backendUrl}user/${id}`,
+      data: postData,
+      dataType: 'json',
+      contentType: 'application/json',
+    };
+    return axios(config);
+  },
+  deleteUserById: (id) => {
+    const config = {
+      method: 'DELETE',
+      url: `${process.env.backendUrl}user/${id}`,
       dataType: 'json',
       contentType: 'application/json',
     };
