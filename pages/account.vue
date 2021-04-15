@@ -105,6 +105,17 @@
                   @blur="$v.DialogData.employee_id.$touch()"
                 />
               </v-col>
+              <v-col cols="12" md="4" sm="6" v-if="Mode === 'add'">
+                <v-text-field
+                  v-model="DialogData.password"
+                  label="密碼"
+                  type="password"
+                  required
+                  :rules="[(v) => !!v || '*必需輸入']"
+                  @input="$v.DialogData.password.$touch()"
+                  @blur="$v.DialogData.password.$touch()"
+                />
+              </v-col>
               <v-col cols="12" md="4" sm="6">
                 <v-text-field
                   v-model="DialogData.user_name"
@@ -218,6 +229,7 @@ export default {
     DialogData: {
       employee_id: { required },
       user_name: { required },
+      password: { required },
       user_title: { required },
       email: { required },
     },
@@ -438,6 +450,7 @@ export default {
           department_id: this.SelectDialogDepItemValue,
           employee_id: this.DialogData.employee_id,
           user_name: this.DialogData.user_name,
+          password: this.DialogData.password,
           user_title: this.DialogData.user_title,
           email: this.DialogData.email,
           is_power_user: this.SwitchIsPowerUser === true ? 1 : 0,
