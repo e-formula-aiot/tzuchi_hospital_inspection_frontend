@@ -91,6 +91,15 @@ const backendService = {
     };
     return axios(config);
   },
+  deleteUnlinkLineId: (userId, lineUserId) => {
+    const config = {
+      method: 'DELETE',
+      url: `${process.env.backendUrl}user/${userId}/unlink_line_id/${lineUserId}`,
+      dataType: 'json',
+      contentType: 'application/json',
+    };
+    return axios(config);
+  },
   getOrg: () => {
     const config = {
       headers: {
@@ -145,15 +154,6 @@ const backendService = {
     const config = {
       method: 'DELETE',
       url: `${process.env.backendUrl}org/${id}`,
-      dataType: 'json',
-      contentType: 'application/json',
-    };
-    return axios(config);
-  },
-  getCategoryById: (id) => {
-    const config = {
-      method: 'GET',
-      url: `${process.env.backendUrl}category/${id}`,
       dataType: 'json',
       contentType: 'application/json',
     };
@@ -215,10 +215,37 @@ const backendService = {
     };
     return axios(config);
   },
+  getCategoryById: (id) => {
+    const config = {
+      method: 'GET',
+      url: `${process.env.backendUrl}category/${id}`,
+      dataType: 'json',
+      contentType: 'application/json',
+    };
+    return axios(config);
+  },
   getCategoryByOrganisationId: (organisationId) => {
     const config = {
       method: 'GET',
       url: `${process.env.backendUrl}category/?organisation_id=${organisationId}`,
+      dataType: 'json',
+      contentType: 'application/json',
+    };
+    return axios(config);
+  },
+  getCategoryUsersById: (categoryId) => {
+    const config = {
+      method: 'GET',
+      url: `${process.env.backendUrl}category/${categoryId}/users/`,
+      dataType: 'json',
+      contentType: 'application/json',
+    };
+    return axios(config);
+  },
+  getCategoryUsersByIdInvers: (categoryId) => {
+    const config = {
+      method: 'GET',
+      url: `${process.env.backendUrl}category/${categoryId}/users/?inverse=1`,
       dataType: 'json',
       contentType: 'application/json',
     };
@@ -232,6 +259,27 @@ const backendService = {
       method: 'POST',
       url: `${process.env.backendUrl}category/`,
       data: postData,
+      dataType: 'json',
+      contentType: 'application/json',
+    };
+    return axios(config);
+  },
+  postCategoryUsersByIdInvers: (categoryId, userId) => {
+    const config = {
+      headers: {
+        Authorization: makeAuthorizationHeader(),
+      },
+      method: 'POST',
+      url: `${process.env.backendUrl}category/${categoryId}/users/${userId}`,
+      dataType: 'json',
+      contentType: 'application/json',
+    };
+    return axios(config);
+  },
+  deleteCategoryUsersById: (categoryId, userId) => {
+    const config = {
+      method: 'DELETE',
+      url: `${process.env.backendUrl}category/${categoryId}/users/${userId}`,
       dataType: 'json',
       contentType: 'application/json',
     };

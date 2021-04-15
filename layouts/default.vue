@@ -112,6 +112,11 @@ export default {
           title: '人員管理',
           to: '/account/',
         },
+        {
+          icon: 'mdi-feature-search-outline',
+          title: '巡檢管理',
+          to: '/taskMag/',
+        },
       ],
       userName:
         Cookie.get('username') !== undefined ? Cookie.get('username') : '',

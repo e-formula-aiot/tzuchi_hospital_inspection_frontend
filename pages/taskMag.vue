@@ -4,7 +4,7 @@
 
     <v-card>
       <v-card-title>
-        <span>人員管理</span>
+        <span>巡檢分類管理</span>
         <v-spacer />
         <v-btn text icon @click="onDialogAddOpen()">
           <v-icon large color="orange accent-3">
@@ -14,7 +14,7 @@
       </v-card-title>
       <v-card-text>
         <v-row>
-          <v-col cols="12" md="5" sm="6">
+          <v-col cols="12">
             <v-select
               :items="selectOrgItem"
               label="院區"
@@ -23,20 +23,6 @@
               v-model="selectOrgItemValue"
               @change="onChangeOrg(selectOrgItemValue)"
             />
-          </v-col>
-          <v-col cols="12" md="5" sm="6">
-            <v-select
-              :items="selectDeptItem"
-              label="部門"
-              item-value="_id"
-              item-text="name"
-              v-model="selectDeptItemValue"
-            />
-          </v-col>
-          <v-col cols="12" md="1" sm="1">
-            <v-btn rounded color="primary" @click="getUserByDeptId">
-              查詢
-            </v-btn>
           </v-col>
         </v-row>
 
@@ -69,7 +55,7 @@
     </v-card>
 
     <v-Dialog v-model="Dialog" persistent max-width="800px">
-      <v-form ref="userForm">
+      <v-form ref="Form">
         <v-card>
           <v-card-title>
             <span class="headline">{{ DialogTitle }}</span>
@@ -83,86 +69,80 @@
                   item-value="_id"
                   item-text="name"
                   v-model="SelectDialogOrgItemValue"
-                  @change="onChangeDialogOrg(SelectDialogOrgItemValue)"
-                />
-              </v-col>
-              <v-col cols="12" md="4" sm="6">
-                <v-select
-                  :items="SelectDialogDepItem"
-                  label="部門"
-                  item-value="_id"
-                  item-text="name"
-                  v-model="SelectDialogDepItemValue"
                 />
               </v-col>
               <v-col cols="12" md="4" sm="6">
                 <v-text-field
-                  v-model="DialogData.employee_id"
-                  label="工號"
+                  v-model="DialogData.category_name"
+                  label="分類名稱"
                   required
                   :rules="[(v) => !!v || '*必需輸入']"
-                  @input="$v.DialogData.employee_id.$touch()"
-                  @blur="$v.DialogData.employee_id.$touch()"
+                  @input="$v.DialogData.category_name.$touch()"
+                  @blur="$v.DialogData.category_name.$touch()"
                 />
               </v-col>
               <v-col cols="12" md="4" sm="6">
                 <v-text-field
-                  v-model="DialogData.user_name"
-                  label="姓名"
-                  required
-                  :rules="[(v) => !!v || '*必需輸入']"
-                  @input="$v.DialogData.user_name.$touch()"
-                  @blur="$v.DialogData.user_name.$touch()"
+                  v-model="DialogData.subcategory_name"
+                  label="子分類"
                 />
-              </v-col>
-              <v-col cols="12" md="4" sm="6">
-                <v-text-field
-                  v-model="DialogData.user_title"
-                  label="稱謂"
-                  required
-                  :rules="[(v) => !!v || '*必需輸入']"
-                  @input="$v.DialogData.user_title.$touch()"
-                  @blur="$v.DialogData.user_title.$touch()"
-                />
-              </v-col>
-              <v-col cols="12" md="4" sm="6">
-                <v-text-field
-                  v-model="DialogData.email"
-                  label="Email"
-                  required
-                  :rules="[(v) => !!v || '*必需輸入']"
-                  @input="$v.DialogData.email.$touch()"
-                  @blur="$v.DialogData.email.$touch()"
-                />
-              </v-col>
-              <v-col cols="12" md="4" sm="6">
-                <v-switch v-model="SwitchIsPowerUser" label="管理者" />
               </v-col>
 
-              <v-col cols="12" v-if="Mode === 'edit'">
+              <v-card-title>
+                <span>分類人員管理</span>
+              </v-card-title>
+
+              <v-card-text>
+                <span>當前管理人員</span>
                 <v-data-table
+                  v-if="Mode === 'edit'"
                   fixed-header
                   dense
-                  :headers="headersLineUser"
-                  :items="dataTableLineUser"
+                  :headers="headersCategoryUser"
+                  :items="dataTableCategoryUser"
                   item-key="_id"
-                  :search="searchLineUser"
+                  :search="searchCategoryUser"
                   :items-per-page="25"
                   :footer-props="{
                     'items-per-page-options': [25, 50, 100],
                   }"
                   class="elevation-1"
                 >
-                  <template v-slot:item.actionLineUser="{ item }">
-                    <v-icon
-                      small
-                      @click="onDeleteLineUserConfirmationVisible(item)"
-                    >
+                  <template v-slot:item.is_power_user="{ item }">
+                    {{ item.is_power_user === 1 ? '是' : '否' }}
+                  </template>
+                  <template v-slot:item.actionCategoryUser="{ item }">
+                    <v-icon small @click="deleteCategoryUsersById(item)">
                       mdi-delete
                     </v-icon>
                   </template>
                 </v-data-table>
-              </v-col>
+                <br />
+                <span>其他人員</span>
+                <v-data-table
+                  v-if="Mode === 'edit'"
+                  fixed-header
+                  dense
+                  :headers="headersCategoryUser"
+                  :items="dataTableCategoryUserInverse"
+                  item-key="_id"
+                  :search="searchCategoryUser"
+                  :items-per-page="25"
+                  :footer-props="{
+                    'items-per-page-options': [25, 50, 100],
+                  }"
+                  class="elevation-1"
+                >
+                  <template v-slot:item.is_power_user="{ item }">
+                    {{ item.is_power_user === 1 ? '是' : '否' }}
+                  </template>
+                  <template v-slot:item.actionCategoryUser="{ item }">
+                    <v-icon small @click="postCategoryUsersByIdInvers(item)">
+                      mdi-plus
+                    </v-icon>
+                  </template>
+                </v-data-table>
+              </v-card-text>
             </v-row>
           </v-card-text>
           <v-card-actions>
@@ -173,7 +153,7 @@
             <v-btn
               color="blue darken-1"
               text
-              @click="putUserById"
+              @click="putCategoryById"
               v-if="Mode === 'edit'"
             >
               送出
@@ -181,7 +161,7 @@
             <v-btn
               color="blue darken-1"
               text
-              @click="postUser"
+              @click="postCategory"
               v-else-if="Mode === 'add'"
             >
               新增
@@ -193,15 +173,9 @@
 
     <confirmation
       :visible.sync="visibleConfirmation"
-      :content="'確定刪除此使用者?'"
+      :content="'確定刪除?'"
       @no-click="onDeleteConfirmationNoClick"
       @yes-click="onDeleteConfirmationYesClick"
-    />
-    <confirmation
-      :visible.sync="visibleConfirmationLineUser"
-      :content="'確定刪除此綁定使用者?'"
-      @no-click="onDeleteLineUserConfirmationNoClick"
-      @yes-click="onDeleteLineUserConfirmationYesClick"
     />
   </div>
 </template>
@@ -216,37 +190,23 @@ export default {
   mixins: [validationMixin],
   validations: {
     DialogData: {
-      employee_id: { required },
-      user_name: { required },
-      user_title: { required },
-      email: { required },
+      category_name: { required },
     },
   },
-  name: 'account',
+  name: 'taskMag',
   data() {
     return {
       snackbarData: undefined,
       visibleConfirmation: false,
-      visibleConfirmationLineUser: false,
       selectOrgItem: [],
       selectOrgItemValue: 0,
-      selectDeptItem: [],
-      selectDeptItemValue: 0,
       SelectDialogOrgItem: [],
       SelectDialogOrgItemValue: 0,
-      SelectDialogDepItem: [],
-      SelectDialogDepItemValue: 0,
-      SwitchIsPowerUser: 0,
       search: '',
       headers: [
         { text: 'ID', value: '_id', width: '65px' },
-        { text: '工號', value: 'employee_id', width: '75px' },
-        { text: '姓名', value: 'user_name', width: '75px' },
-        { text: '稱謂', value: 'user_title', width: '75px' },
-        { text: 'Email', value: 'email', width: '110px' },
-        { text: '管理員', value: 'is_power_user', width: '90px' },
-        { text: '紀錄人員所屬部門', value: 'department_name', width: '150px' },
-        { text: '紀錄 Line ID', value: 'line_usernames', width: '450px' },
+        { text: '分院名稱', value: 'category_name' },
+        { text: '子分類', value: 'subcategory_name' },
         {
           text: '',
           align: 'center',
@@ -259,20 +219,25 @@ export default {
       Dialog: false,
       DialogTitle: '',
       DialogData: {},
-      searchLineUser: '',
-      headersLineUser: [
+      searchCategoryUser: '',
+      headersCategoryUser: [
         { text: 'ID', value: '_id', width: '65px' },
-        { text: '使用者ID', value: 'channel_user_id', width: '75px' },
-        { text: 'Line帳號名稱', value: 'display_name', width: '75px' },
+        { text: '工號', value: 'employee_id', width: '75px' },
+        { text: '姓名', value: 'user_name', width: '75px' },
+        { text: '稱謂', value: 'user_title', width: '75px' },
+        { text: 'Email', value: 'email', width: '130px' },
+        { text: '管理員', value: 'is_power_user', width: '90px' },
+        { text: '紀錄人員所屬部門', value: 'department_name', width: '150px' },
         {
           text: '',
           align: 'center',
-          value: 'actionLineUser',
+          value: 'actionCategoryUser',
           sortable: false,
-          width: '80px',
+          // width: '80px',
         },
       ],
-      dataTableLineUser: [],
+      dataTableCategoryUser: [],
+      dataTableCategoryUserInverse: [],
       Mode: 'view',
     };
   },
@@ -313,8 +278,8 @@ export default {
               });
             }
           });
-          this.getDeptByOrganisationId(this.selectOrgItemValue);
-          this.getDeptByOrganisationIdDialog(this.SelectDialogOrgItemValue);
+          this.getCategoryByOrganisationId(this.selectOrgItemValue);
+          this.getCategoryByOrganisationIdDialog(this.SelectDialogOrgItemValue);
         })
         .catch((error) => {
           this.snackbarData = {
@@ -323,32 +288,11 @@ export default {
           };
         });
     },
-    getDeptByOrganisationId(id) {
+    getCategoryByOrganisationId(id) {
       backendService
-        .getDeptByOrganisationId(id)
+        .getCategoryByOrganisationId(id)
         .then((response) => {
-          this.deptDataTable = response.data;
-
-          this.selectDeptItem = [];
-
-          response.data.forEach((element, index) => {
-            if (index === 0) {
-              this.selectDeptItemValue = element._id;
-            }
-
-            if (
-              this.selectDeptItem.findIndex((x) => {
-                return x.name === element.department_name;
-              }) === -1
-            ) {
-              this.selectDeptItem.push({
-                _id: element._id,
-                name: element.department_name,
-              });
-            }
-          });
-
-          this.getUserByDeptId();
+          this.dataTable = response.data;
         })
         .catch((error) => {
           this.snackbarData = {
@@ -357,27 +301,25 @@ export default {
           };
         });
     },
-    getDeptByOrganisationIdDialog(id) {
+    getCategoryByOrganisationIdDialog() {
       backendService
-        .getDeptByOrganisationId(id)
+        .getOrg()
         .then((response) => {
-          this.deptDataTable = response.data;
-
-          this.SelectDialogDepItem = [];
+          this.SelectDialogOrgItem = [];
 
           response.data.forEach((element, index) => {
             if (index === 0 && this.Mode !== 'edit') {
-              this.SelectDialogDepItemValue = element._id;
+              this.SelectDialogOrgItemValue = element._id;
             }
 
             if (
-              this.SelectDialogDepItem.findIndex((x) => {
-                return x.name === element.department_name;
+              this.SelectDialogOrgItem.findIndex((x) => {
+                return x.name === element.organisation_name;
               }) === -1
             ) {
-              this.SelectDialogDepItem.push({
+              this.SelectDialogOrgItem.push({
                 _id: element._id,
-                name: element.department_name,
+                name: element.organisation_name,
               });
             }
           });
@@ -389,40 +331,18 @@ export default {
           };
         });
     },
-    getUserByDeptId() {
+    getCategoryById(id) {
       backendService
-        .getUserByDeptId(this.selectDeptItemValue)
-        .then((response) => {
-          this.dataTable = response.data;
-
-          let tempLineUsernames = '';
-          response.data.forEach((element, index) => {
-            element.line_users.forEach((value) => {
-              tempLineUsernames += `${value.display_name}\n`;
-            });
-            this.dataTable[index].line_usernames = tempLineUsernames;
-          });
-        })
-        .catch((error) => {
-          this.snackbarData = {
-            snackbar: true,
-            snackbar_msg: error.response.data.msg,
-          };
-        });
-    },
-    getUserById(id) {
-      backendService
-        .getUserById(id)
+        .getCategoryById(id)
         .then((response) => {
           this.DialogData = response.data;
 
-          this.dataTableLineUser = response.data.line_users;
-
-          this.getDeptByOrganisationIdDialog(response.data.organisation_id);
+          this.getCategoryByOrganisationIdDialog(response.data.organisation_id);
 
           this.SelectDialogOrgItemValue = response.data.organisation_id;
-          this.SelectDialogDepItemValue = response.data.department_id;
-          this.SwitchIsPowerUser = response.data.is_power_user;
+
+          this.getCategoryUsersById(response.data._id);
+          this.getCategoryUsersByIdInvers(response.data._id);
         })
         .catch((error) => {
           this.snackbarData = {
@@ -431,59 +351,35 @@ export default {
           };
         });
     },
-    postUser() {
-      if (this.$refs.userForm.validate()) {
-        const postData = {
-          department_id: this.SelectDialogDepItemValue,
-          employee_id: this.DialogData.employee_id,
-          user_name: this.DialogData.user_name,
-          user_title: this.DialogData.user_title,
-          email: this.DialogData.email,
-          is_power_user: this.SwitchIsPowerUser === true ? 1 : 0,
-        };
-
-        backendService
-          .postUser(postData)
-          .then((response) => {
-            this.getOrg();
-            this.Dialog = false;
-          })
-          .catch((error) => {
-            this.snackbarData = {
-              snackbar: true,
-              snackbar_msg: error.response.data.msg,
-            };
-          });
-      }
-    },
-    putUserById() {
-      if (this.$refs.userForm.validate()) {
-        const postData = {
-          department_id: this.SelectDialogDepItemValue,
-          employee_id: this.DialogData.employee_id,
-          user_name: this.DialogData.user_name,
-          user_title: this.DialogData.user_title,
-          email: this.DialogData.email,
-          is_power_user: this.SwitchIsPowerUser === true ? 1 : 0,
-        };
-
-        backendService
-          .putUserById(this.DialogData._id, postData)
-          .then((response) => {
-            this.getOrg();
-            this.Dialog = false;
-          })
-          .catch((error) => {
-            this.snackbarData = {
-              snackbar: true,
-              snackbar_msg: error.response.data.msg,
-            };
-          });
-      }
-    },
-    deleteUserById(id) {
+    getCategoryUsersById(id) {
       backendService
-        .deleteUserById(id)
+        .getCategoryUsersById(id)
+        .then((response) => {
+          this.dataTableCategoryUser = response.data;
+        })
+        .catch((error) => {
+          this.snackbarData = {
+            snackbar: true,
+            snackbar_msg: error.response.data.msg,
+          };
+        });
+    },
+    getCategoryUsersByIdInvers(id) {
+      backendService
+        .getCategoryUsersByIdInvers(id)
+        .then((response) => {
+          this.dataTableCategoryUserInverse = response.data;
+        })
+        .catch((error) => {
+          this.snackbarData = {
+            snackbar: true,
+            snackbar_msg: error.response.data.msg,
+          };
+        });
+    },
+    postCategoryUsersByIdInvers(item) {
+      backendService
+        .postCategoryUsersByIdInvers(this.DialogData._id, item._id)
         .then((response) => {
           this.getOrg();
           this.Dialog = false;
@@ -495,9 +391,67 @@ export default {
           };
         });
     },
-    deleteUnlinkLineId(userId, lineUserId) {
+    deleteCategoryUsersById(item) {
       backendService
-        .deleteUnlinkLineId(userId, lineUserId)
+        .deleteCategoryUsersById(this.DialogData._id, item._id)
+        .then((response) => {
+          this.getOrg();
+          this.Dialog = false;
+        })
+        .catch((error) => {
+          this.snackbarData = {
+            snackbar: true,
+            snackbar_msg: error.response.data.msg,
+          };
+        });
+    },
+    postCategory() {
+      if (this.$refs.Form.validate()) {
+        const postData = {
+          organisation_id: this.SelectDialogOrgItemValue,
+          category_name: this.DialogData.category_name,
+          subcategory_name: this.DialogData.subcategory_name,
+        };
+
+        backendService
+          .postCategory(postData)
+          .then((response) => {
+            this.getOrg();
+            this.Dialog = false;
+          })
+          .catch((error) => {
+            this.snackbarData = {
+              snackbar: true,
+              snackbar_msg: error.response.data.msg,
+            };
+          });
+      }
+    },
+    putCategoryById() {
+      if (this.$refs.Form.validate()) {
+        const postData = {
+          organisation_id: this.SelectDialogOrgItemValue,
+          category_name: this.DialogData.category_name,
+          subcategory_name: this.DialogData.subcategory_name,
+        };
+
+        backendService
+          .putCategoryById(this.DialogData._id, postData)
+          .then((response) => {
+            this.getOrg();
+            this.Dialog = false;
+          })
+          .catch((error) => {
+            this.snackbarData = {
+              snackbar: true,
+              snackbar_msg: error.response.data.msg,
+            };
+          });
+      }
+    },
+    deleteCategoryById(id) {
+      backendService
+        .deleteCategoryById(id)
         .then((response) => {
           this.getOrg();
           this.Dialog = false;
@@ -510,13 +464,13 @@ export default {
         });
     },
     onDialogEditOpen(item) {
-      this.DialogTitle = '修改人員';
+      this.DialogTitle = '修改巡檢分類';
       this.Mode = 'edit';
-      this.getUserById(item._id);
+      this.getCategoryById(item._id);
       this.Dialog = true;
     },
     onDialogAddOpen() {
-      this.DialogTitle = '新增人員';
+      this.DialogTitle = '新增巡檢分類';
       this.Mode = 'add';
       this.DialogData = {};
       this.Dialog = true;
@@ -532,25 +486,11 @@ export default {
       this.visibleConfirmation = false;
     },
     onDeleteConfirmationYesClick() {
-      this.deleteUserById(this.DialogData._id);
+      this.deleteCategoryById(this.DialogData._id);
       this.visibleConfirmation = false;
     },
     onChangeOrg(id) {
-      this.getDeptByOrganisationId(id);
-    },
-    onChangeDialogOrg(id) {
-      this.getDeptByOrganisationIdDialog(id);
-    },
-    onDeleteLineUserConfirmationVisible(item) {
-      this.dataTableLineUser._id = item._id;
-      this.visibleConfirmationLineUser = true;
-    },
-    onDeleteLineUserConfirmationNoClick() {
-      this.visibleConfirmationLineUser = false;
-    },
-    onDeleteLineUserConfirmationYesClick() {
-      this.deleteUnlinkLineId(this.DialogData._id, this.dataTableLineUser._id);
-      this.visibleConfirmationLineUser = false;
+      this.getCategoryByOrganisationId(id);
     },
   },
 };
