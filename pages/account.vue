@@ -332,9 +332,10 @@ export default {
           this.selectDeptItem = [];
 
           response.data.forEach((element, index) => {
-            if (index === 0) {
-              this.selectDeptItemValue = element._id;
-            }
+            this.selectDeptItem.push({
+              _id: 0,
+              name: '全部',
+            });
 
             if (
               this.selectDeptItem.findIndex((x) => {
@@ -391,12 +392,12 @@ export default {
     },
     getUserByDeptId() {
       backendService
-        .getUserByDeptId(this.selectDeptItemValue)
+        .getUserByDeptId(this.selectOrgItemValue, this.selectDeptItemValue)
         .then((response) => {
           this.dataTable = response.data;
 
-          let tempLineUsernames = '';
           response.data.forEach((element, index) => {
+            let tempLineUsernames = '';
             element.line_users.forEach((value) => {
               tempLineUsernames += `${value.display_name}\n`;
             });

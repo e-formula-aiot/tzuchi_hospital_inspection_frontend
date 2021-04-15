@@ -47,14 +47,24 @@ const backendService = {
     };
     return axios(config);
   },
-  getUserByDeptId: (departmentId) => {
-    const config = {
-      method: 'GET',
-      url: `${process.env.backendUrl}user/?department_id=${departmentId}`,
-      dataType: 'json',
-      contentType: 'application/json',
-    };
-    return axios(config);
+  getUserByDeptId: (organisationId, departmentId) => {
+    if (departmentId === 0) {
+      const config = {
+        method: 'GET',
+        url: `${process.env.backendUrl}user/?organisation_id=${organisationId}`,
+        dataType: 'json',
+        contentType: 'application/json',
+      };
+      return axios(config);
+    } else {
+      const config = {
+        method: 'GET',
+        url: `${process.env.backendUrl}user/?organisation_id=${organisationId}&department_id=${departmentId}`,
+        dataType: 'json',
+        contentType: 'application/json',
+      };
+      return axios(config);
+    }
   },
   postUser: (postData) => {
     const config = {
@@ -84,6 +94,9 @@ const backendService = {
   },
   deleteUserById: (id) => {
     const config = {
+      headers: {
+        Authorization: makeAuthorizationHeader(),
+      },
       method: 'DELETE',
       url: `${process.env.backendUrl}user/${id}`,
       dataType: 'json',
@@ -93,6 +106,9 @@ const backendService = {
   },
   deleteUnlinkLineId: (userId, lineUserId) => {
     const config = {
+      headers: {
+        Authorization: makeAuthorizationHeader(),
+      },
       method: 'DELETE',
       url: `${process.env.backendUrl}user/${userId}/unlink_line_id/${lineUserId}`,
       dataType: 'json',
@@ -152,6 +168,9 @@ const backendService = {
   },
   deleteOrgById: (id) => {
     const config = {
+      headers: {
+        Authorization: makeAuthorizationHeader(),
+      },
       method: 'DELETE',
       url: `${process.env.backendUrl}org/${id}`,
       dataType: 'json',
@@ -208,6 +227,9 @@ const backendService = {
   },
   deleteDeptById: (id) => {
     const config = {
+      headers: {
+        Authorization: makeAuthorizationHeader(),
+      },
       method: 'DELETE',
       url: `${process.env.backendUrl}dept/${id}`,
       dataType: 'json',
@@ -278,6 +300,9 @@ const backendService = {
   },
   deleteCategoryUsersById: (categoryId, userId) => {
     const config = {
+      headers: {
+        Authorization: makeAuthorizationHeader(),
+      },
       method: 'DELETE',
       url: `${process.env.backendUrl}category/${categoryId}/users/${userId}`,
       dataType: 'json',
@@ -300,6 +325,9 @@ const backendService = {
   },
   deleteCategoryById: (id) => {
     const config = {
+      headers: {
+        Authorization: makeAuthorizationHeader(),
+      },
       method: 'DELETE',
       url: `${process.env.backendUrl}category/${id}`,
       dataType: 'json',

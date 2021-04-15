@@ -249,7 +249,7 @@ export default {
       deptSearch: '',
       deptHeaders: [
         { text: 'ID', value: '_id' },
-        { text: '分院ID', value: 'organisation_id' },
+        // { text: '分院ID', value: 'organisation_id' },
         { text: '部門名稱', value: 'department_name' },
         {
           text: '',
